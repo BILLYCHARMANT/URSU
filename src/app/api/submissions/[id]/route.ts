@@ -2,7 +2,7 @@
 // PATCH /api/submissions/[id] - Update submission (trainee, only if RESUBMIT_REQUESTED)
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { SubmissionStatus } from "@prisma/client";
+import { SubmissionStatus } from "@/types";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";

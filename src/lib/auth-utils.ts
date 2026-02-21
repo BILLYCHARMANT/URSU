@@ -1,7 +1,7 @@
 // Role-based route protection helpers
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
-import type { Role } from "@prisma/client";
+import type { Role } from "@/types";
 
 export async function getSession() {
   return getServerSession(authOptions);

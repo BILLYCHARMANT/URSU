@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { ScheduleRequestStatus } from "@prisma/client";
+import { ScheduleRequestStatus } from "@/types";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";

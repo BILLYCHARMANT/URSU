@@ -5,7 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import type { Role } from "@prisma/client";
+import type { Role } from "@/types";
 
 const registerSchema = z.object({
   email: z.string().email(),

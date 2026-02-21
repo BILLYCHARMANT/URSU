@@ -1,6 +1,6 @@
 // Progress tracking: module completion = all lessons accessed + mandatory assignment approved.
 // Program completion = all modules completed. Admin does not manually change progress.
-import { SubmissionStatus, ProgressStatus } from "@prisma/client";
+import { SubmissionStatus, ProgressStatus } from "@/types";
 import { prisma } from "./prisma";
 import { hasTraineeAccessedAllLessonsInModule } from "./lesson-access-service";
 

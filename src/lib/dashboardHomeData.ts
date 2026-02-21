@@ -1,13 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import type { Role } from "@prisma/client";
+import type { Role } from "@/types";
 import {
   ProgramStatus,
   SubmissionStatus,
   ScheduleRequestStatus,
   ScheduleEventType,
-} from "@prisma/client";
+} from "@/types";
 
 const DEFAULT_DONUT = [{ name: "No submissions", value: 1, color: "#e5e7eb" }];
 

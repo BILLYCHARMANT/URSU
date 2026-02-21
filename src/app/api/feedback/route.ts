@@ -1,7 +1,7 @@
 // POST /api/feedback - Add feedback (and set submission status) - mentor/admin
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { SubmissionStatus } from "@prisma/client";
+import { SubmissionStatus } from "@/types";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";

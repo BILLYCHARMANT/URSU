@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { SubmissionStatus, ScheduleRequestStatus } from "@prisma/client";
+import { SubmissionStatus, ScheduleRequestStatus } from "@/types";
 import { prisma } from "@/lib/prisma";
 import { AdminScheduleApprovalsContent } from "@/components/admin/AdminScheduleApprovalsContent";
 

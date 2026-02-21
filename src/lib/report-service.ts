@@ -2,7 +2,7 @@
  * Admin reporting: by program, cohort, date range, completion status.
  * Exports: CSV, PDF (data for report).
  */
-import { ProgressStatus } from "@prisma/client";
+import { ProgressStatus } from "@/types";
 import { prisma } from "./prisma";
 
 export type ReportRow = {
