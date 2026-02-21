@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import type { SubmissionStatus } from "@/types";
 
 export async function GET(
   _req: Request,
@@ -57,7 +58,7 @@ export async function GET(
     ]);
 
     const statusCounts = { PENDING: 0, APPROVED: 0, REJECTED: 0, RESUBMIT_REQUESTED: 0 };
-    submissionsByStatus.forEach((s) => {
+    submissionsByStatus.forEach((s: { status: SubmissionStatus; _count: { id: number } }) => {
       statusCounts[s.status as keyof typeof statusCounts] = s._count.id;
     });
     const totalSubmissions = Object.values(statusCounts).reduce((a, b) => a + b, 0);
