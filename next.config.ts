@@ -23,8 +23,19 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   turbopack: {},
 
-  // Don't bundle next-auth; use Node require (fixes "Can't resolve 'next-auth'")
-  serverExternalPackages: ["next-auth"],
+  // Keep these out of the serverless bundle to stay under Vercel's 250 MB limit
+  serverExternalPackages: [
+    "next-auth",
+    "@prisma/client",
+    "@prisma/adapter-pg",
+    "prisma",
+    "pg",
+    "pg-native",
+    "bcryptjs",
+    "recharts",
+    "pdf-lib",
+    "qrcode",
+  ],
 
   typescript: {
     ignoreBuildErrors: true,
