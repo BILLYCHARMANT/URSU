@@ -1,14 +1,16 @@
 // Prisma client singleton for Next.js (Prisma 7 requires a driver adapter)
+// Type from generated client (avoids @prisma/client export resolution with bundler)
+import type { PrismaClient as PrismaClientType } from ".prisma/client";
 import * as PrismaPkg from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-// Get PrismaClient from package (avoids named import type resolution issues with bundler / Prisma 7)
-const PrismaClient = (PrismaPkg as unknown as { PrismaClient: new (args?: object) => object }).PrismaClient;
+// Get PrismaClient constructor from package (value; type comes from type-only import above)
+const PrismaClient = (PrismaPkg as unknown as { PrismaClient: new (args?: object) => PrismaClientType }).PrismaClient;
 
 // Re-export JsonNull for setting JSON fields to DB null (avoids importing Prisma namespace in routes; TS may not resolve it with bundler)
 export const PrismaJsonNull = (PrismaPkg as unknown as { Prisma?: { JsonNull: unknown } }).Prisma?.JsonNull;
 
-const globalForPrisma = globalThis as unknown as { prisma: InstanceType<typeof PrismaClient> };
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClientType };
 
 function getConnectionString(): string {
   let connectionString = process.env.DATABASE_URL;
@@ -30,7 +32,7 @@ function getConnectionString(): string {
   return connectionString;
 }
 
-function createPrisma() {
+function createPrisma(): PrismaClientType {
   const connectionString = getConnectionString();
   const adapterOptions: { connectionString: string; max?: number } = { connectionString };
   if (process.env.NODE_ENV === "development") {
@@ -43,7 +45,7 @@ function createPrisma() {
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
-  });
+  }) as PrismaClientType;
 }
 
 export const prisma = globalForPrisma.prisma ?? createPrisma();
