@@ -28,7 +28,7 @@ export async function GET(
     return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
   const buffer = fs.readFileSync(filePath);
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer) as BodyInit, {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="${filename}"`,

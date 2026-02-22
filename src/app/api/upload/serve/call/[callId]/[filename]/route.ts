@@ -47,5 +47,5 @@ export async function GET(
     "Content-Type": contentType,
     "Content-Disposition": inline ? "inline" : `attachment; filename="${filename}"`,
   };
-  return new NextResponse(buffer, { headers });
+  return new NextResponse(buffer as BodyInit, { headers });
 }

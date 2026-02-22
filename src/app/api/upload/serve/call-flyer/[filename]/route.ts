@@ -26,7 +26,7 @@ export async function GET(
   }
   const ext = path.extname(filename).toLowerCase();
   const contentType = MIME[ext] || "application/octet-stream";
-  return new NextResponse(buffer, {
+  return new NextResponse(buffer as BodyInit, {
     headers: {
       "Content-Type": contentType,
       "Cache-Control": "public, max-age=86400",

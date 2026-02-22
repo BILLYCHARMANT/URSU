@@ -23,7 +23,7 @@ export async function GET(
   }
   const ext = path.extname(filename).toLowerCase();
   const contentType = ext === ".png" ? "image/png" : ext === ".jpg" || ext === ".jpeg" ? "image/jpeg" : ext === ".gif" ? "image/gif" : "image/png";
-  return new NextResponse(buffer, {
+  return new NextResponse(buffer as BodyInit, {
     headers: {
       "Content-Type": contentType,
       "Cache-Control": "private, max-age=86400",

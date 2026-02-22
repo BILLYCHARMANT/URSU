@@ -8,12 +8,12 @@ export function useNetlifyBlob(): boolean {
   return process.env.NETLIFY === "true" || process.env.USE_NETLIFY_BLOB === "true";
 }
 
-/** Optional subPath (e.g. callId) for keys like "call-submissions/callId/filename". */
+/** Optional subPath (e.g. callId) for keys like "call-submissions/callId/filename". Returns Uint8Array for use with NextResponse (BodyInit). */
 export async function getUploadBuffer(
   subdir: string,
   filename: string,
   subPath?: string
-): Promise<Buffer | null> {
+): Promise<Uint8Array | null> {
   if (useNetlifyBlob()) {
     try {
       const { getStore } = await import("@netlify/blobs");
@@ -21,7 +21,7 @@ export async function getUploadBuffer(
       const key = subPath ? `${subdir}/${subPath}/${filename}` : `${subdir}/${filename}`;
       const data = await store.get(key, { type: "arrayBuffer" });
       if (data == null) return null;
-      return Buffer.from(data);
+      return new Uint8Array(data);
     } catch {
       return null;
     }
@@ -32,5 +32,6 @@ export async function getUploadBuffer(
       ? path.join(process.cwd(), uploadDir, subdir, subPath, filename)
       : path.join(process.cwd(), uploadDir, subdir, filename);
   if (!fs.existsSync(filePath)) return null;
-  return fs.readFileSync(filePath);
+  const buf = fs.readFileSync(filePath);
+  return new Uint8Array(buf);
 }

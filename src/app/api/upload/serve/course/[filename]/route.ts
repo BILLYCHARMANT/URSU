@@ -36,7 +36,7 @@ export async function GET(
     ".mov": "video/quicktime",
   };
   const contentType = imageTypes[ext] ?? videoTypes[ext] ?? "application/octet-stream";
-  return new NextResponse(buffer, {
+  return new NextResponse(buffer as BodyInit, {
     headers: {
       "Content-Type": contentType,
       "Cache-Control": "private, max-age=86400",
