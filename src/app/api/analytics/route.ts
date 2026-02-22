@@ -77,7 +77,7 @@ export async function GET(req: Request) {
       },
       {} as Record<string, ProgressItem[]>
     );
-    const moduleStats = Object.entries(byModule).map(([moduleId, list]) => {
+    const moduleStats = Object.entries(byModule).map(([moduleId, list]: [string, ProgressItem[]]) => {
       const completed = list.filter((p) => p.status === "COMPLETED").length;
       const avg =
         list.length > 0
