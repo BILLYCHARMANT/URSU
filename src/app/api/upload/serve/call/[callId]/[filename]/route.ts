@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import path from "path";
-import fs from "fs";
+import { getUploadBuffer } from "@/lib/upload-store";
 
 const MIME_BY_EXT: Record<string, string> = {
   ".pdf": "application/pdf",
@@ -36,12 +36,10 @@ export async function GET(
   const { searchParams } = new URL(req.url);
   const inline = searchParams.get("inline") === "1";
 
-  const uploadDir = process.env.UPLOAD_DIR || "./uploads";
-  const filePath = path.join(process.cwd(), uploadDir, "call-submissions", callId, filename);
-  if (!fs.existsSync(filePath)) {
+  const buffer = await getUploadBuffer("call-submissions", filename, callId);
+  if (!buffer) {
     return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
-  const buffer = fs.readFileSync(filePath);
   const ext = path.extname(filename).toLowerCase();
   const contentType = MIME_BY_EXT[ext] || "application/octet-stream";
 

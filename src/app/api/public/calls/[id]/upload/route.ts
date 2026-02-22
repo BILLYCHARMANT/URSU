@@ -41,16 +41,34 @@ export async function POST(
     }
 
     const safeName = `${uuidv4()}${ext}`;
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    const fileUrl = `/api/upload/serve/call/${callId}/${safeName}`;
+
+    const { useNetlifyBlob } = await import("@/lib/upload-store");
+    if (useNetlifyBlob()) {
+      try {
+        const { getStore } = await import("@netlify/blobs");
+        const store = getStore("uploads");
+        await store.set(`call-submissions/${callId}/${safeName}`, buffer);
+        return NextResponse.json({ fileUrl, filename: file.name });
+      } catch (blobErr) {
+        console.error("Netlify Blob upload failed:", blobErr);
+        return NextResponse.json(
+          { error: "Upload failed on Netlify. Enable Netlify Blobs (Data & Storage)." },
+          { status: 500 }
+        );
+      }
+    }
+
     const uploadDir = process.env.UPLOAD_DIR || "./uploads";
     const dir = path.join(process.cwd(), uploadDir, "call-submissions", callId);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
     const filePath = path.join(dir, safeName);
-    const bytes = await file.arrayBuffer();
-    fs.writeFileSync(filePath, Buffer.from(bytes));
-
-    const fileUrl = `/api/upload/serve/call/${callId}/${safeName}`;
+    fs.writeFileSync(filePath, buffer);
     return NextResponse.json({ fileUrl, filename: file.name });
   } catch (e) {
     console.error(e);

@@ -1,11 +1,13 @@
-// POST /api/upload - Handle file upload for assignment submissions
-// Returns fileUrl path to store with submission
+// POST /api/upload - Handle file upload for assignment submissions, call flyers, etc.
+// On Netlify uses Netlify Blob; locally uses UPLOAD_DIR on disk.
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import path from "path";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
+
+const BLOB_STORE_NAME = "uploads";
 
 export async function POST(req: Request) {
   try {
@@ -51,14 +53,9 @@ export async function POST(req: Request) {
     }
     const safeExt = ext || (subdir === "avatars" ? ".png" : subdir === "calls" ? ".png" : ".bin");
     const safeName = `${uuidv4()}${safeExt}`;
-    const uploadDir = process.env.UPLOAD_DIR || "./uploads";
-    const dir = path.join(process.cwd(), uploadDir, subdir);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    const filePath = path.join(dir, safeName);
     const bytes = await file.arrayBuffer();
-    fs.writeFileSync(filePath, Buffer.from(bytes));
+    const buffer = Buffer.from(bytes);
+
     const fileUrl =
       subdir === "avatars"
         ? `/api/upload/serve/avatar/${safeName}`
@@ -67,6 +64,36 @@ export async function POST(req: Request) {
           : subdir === "calls"
             ? `/api/upload/serve/call-flyer/${safeName}`
             : `/api/upload/serve/${safeName}`;
+
+    // Netlify: use Blob store (no persistent filesystem)
+    const { useNetlifyBlob } = await import("@/lib/upload-store");
+    if (useNetlifyBlob()) {
+      try {
+        const { getStore } = await import("@netlify/blobs");
+        const store = getStore(BLOB_STORE_NAME);
+        const key = `${subdir}/${safeName}`;
+        await store.set(key, buffer);
+        return NextResponse.json({ fileUrl, filename: file.name });
+      } catch (blobErr) {
+        console.error("Netlify Blob upload failed:", blobErr);
+        return NextResponse.json(
+          {
+            error:
+              "Upload failed on Netlify. Enable Netlify Blobs in the Netlify dashboard (Data & Storage) or use a flyer URL instead.",
+          },
+          { status: 500 }
+        );
+      }
+    }
+
+    // Local: write to disk
+    const uploadDir = process.env.UPLOAD_DIR || "./uploads";
+    const dir = path.join(process.cwd(), uploadDir, subdir);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    const filePath = path.join(dir, safeName);
+    fs.writeFileSync(filePath, buffer);
     return NextResponse.json({ fileUrl, filename: file.name });
   } catch (e) {
     console.error(e);

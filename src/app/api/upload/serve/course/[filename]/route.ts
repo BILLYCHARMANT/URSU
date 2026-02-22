@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import path from "path";
-import fs from "fs";
+import { getUploadBuffer } from "@/lib/upload-store";
 
 export async function GET(
   _req: Request,
@@ -17,12 +17,10 @@ export async function GET(
   if (!filename || !/^[a-f0-9\-]+\.?[a-z0-9]*$/i.test(filename)) {
     return NextResponse.json({ error: "Invalid filename" }, { status: 400 });
   }
-  const uploadDir = process.env.UPLOAD_DIR || "./uploads";
-  const filePath = path.join(process.cwd(), uploadDir, "courses", filename);
-  if (!fs.existsSync(filePath)) {
+  const buffer = await getUploadBuffer("courses", filename);
+  if (!buffer) {
     return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
-  const buffer = fs.readFileSync(filePath);
   const ext = path.extname(filename).toLowerCase();
   const imageTypes: Record<string, string> = {
     ".png": "image/png",
