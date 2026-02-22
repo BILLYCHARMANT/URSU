@@ -71,8 +71,8 @@ export default async function TraineeProgramLearnPage({
       : [],
     getTraineeProgramProgress(session.user.id, programId).catch(() => null),
   ]);
-  const accessedSet = new Set(accessed.map((a) => a.lessonId));
-  const moduleStatusById = new Map(
+  const accessedSet: Set<string> = new Set(accessed.map((a) => a.lessonId));
+  const moduleStatusById: Map<string, string> = new Map(
     progress?.modules.map((m) => [m.moduleId, m.status]) ?? []
   );
 

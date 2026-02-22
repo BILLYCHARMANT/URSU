@@ -49,7 +49,7 @@ export default async function TraineeLessonPage({
     },
     select: { lessonId: true },
   });
-  const accessedSet = new Set(accessedInModule.map((a) => a.lessonId));
+  const accessedSet: Set<string> = new Set(accessedInModule.map((a) => a.lessonId));
   const lessonIndex = orderedLessonIds.indexOf(lessonId);
   const canAccess =
     lessonIndex >= 0 &&

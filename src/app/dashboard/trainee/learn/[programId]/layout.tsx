@@ -60,7 +60,7 @@ export default async function LearnProgramLayout({
           select: { lessonId: true },
         })
       : [];
-  const accessedLessonIds = new Set(accessed.map((a) => a.lessonId));
+  const accessedLessonIds: Set<string> = new Set(accessed.map((a) => a.lessonId));
 
   let progress: Awaited<ReturnType<typeof getTraineeProgramProgress>> | null = null;
   try {
@@ -100,7 +100,7 @@ export default async function LearnProgramLayout({
         })),
       };
     }),
-    accessedLessonIds: Array.from(accessedLessonIds),
+    accessedLessonIds: Array.from(accessedLessonIds) as string[],
   };
 
   return (
