@@ -49,7 +49,7 @@ export async function GET(
     }
     if (session.user.role === "TRAINEE") {
       const enrolled = cohort.enrollments.some(
-        (e) => e.traineeId === session!.user!.id
+        (e:any) => e.traineeId === session!.user!.id
       );
       if (!enrolled) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
