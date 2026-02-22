@@ -51,7 +51,7 @@ export async function POST(
       try {
         const { getStore } = await import("@netlify/blobs");
         const store = getStore("uploads");
-        await store.set(`call-submissions/${callId}/${safeName}`, buffer);
+        await store.set(`call-submissions/${callId}/${safeName}`, bytes);
         return NextResponse.json({ fileUrl, filename: file.name });
       } catch (blobErr) {
         console.error("Netlify Blob upload failed:", blobErr);
