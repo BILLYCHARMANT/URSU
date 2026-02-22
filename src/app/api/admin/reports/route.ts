@@ -1,5 +1,7 @@
 // GET /api/admin/reports?programId=&cohortId=&from=&to=&status=&format=csv - Export report (admin only)
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getReportData, reportRowsToCsv } from "@/lib/report-service";

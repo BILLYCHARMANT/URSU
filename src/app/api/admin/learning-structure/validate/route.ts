@@ -1,5 +1,7 @@
 // GET /api/admin/learning-structure/validate?programId= - Validate program structure (admin)
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { validateProgramStructure } from "@/lib/learning-structure-service";

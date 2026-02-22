@@ -1,5 +1,7 @@
 // GET /api/admin/certificates/eligibility?traineeId=&programId= (admin only)
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getCertificateEligibility } from "@/lib/certificate-admin-service";

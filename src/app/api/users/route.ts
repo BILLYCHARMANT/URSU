@@ -1,6 +1,8 @@
 // GET /api/users - List users (admin: all; filter by role)
 // Used for assigning mentors and enrolling trainees
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";

@@ -1,5 +1,7 @@
 // GET /api/verify?cert=UNIPOD-PROGRAMS-XXXX - Public certificate verification
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req: Request) {

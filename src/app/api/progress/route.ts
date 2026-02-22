@@ -1,6 +1,8 @@
 // GET /api/progress?traineeId=&programId= - Get progress for trainee in program
 // Admin/mentor can pass traineeId; trainee uses own id
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getTraineeProgramProgress } from "@/lib/progress-service";
