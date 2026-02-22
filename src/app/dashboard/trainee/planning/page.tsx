@@ -69,7 +69,7 @@ export default async function TraineePlanningPage() {
         })
       : [];
   const lessonIds = lessonsForProgram.map((l) => l.id);
-  const moduleIdToProgramId = new Map(
+  const moduleIdToProgramId: Map<string, string> = new Map(
     modules.map((m) => [m.id, m.course?.programId]).filter((e): e is [string, string] => e[1] != null)
   );
 
@@ -112,7 +112,7 @@ export default async function TraineePlanningPage() {
       : [],
   ]);
 
-  const accessedLessonIds = new Set(accessedLessons.map((a) => a.lessonId));
+  const accessedLessonIds: Set<string> = new Set(accessedLessons.map((a) => a.lessonId));
 
   const cohortDuration =
     enrollments[0]?.cohort?.startDate && enrollments[0]?.cohort?.endDate
