@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { CallFormEditor } from "@/components/admin/CallFormEditor";
+import { CallFormEditor, type FormFieldDef } from "@/components/admin/CallFormEditor";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "@/lib/get-server-session";
 
@@ -26,7 +26,7 @@ export default async function EditCallPage({
     imageUrl: call.imageUrl ?? "",
     deadline: call.deadline ? call.deadline.toISOString().slice(0, 16) : "",
     published: call.published,
-    formSchema: (call.formSchema as Array<{ id: string; type: string; label: string; required?: boolean; placeholder?: string; options?: string[]; accept?: string }>) ?? [],
+    formSchema: ((call.formSchema as unknown) as FormFieldDef[]) ?? [],
   };
 
   return (
