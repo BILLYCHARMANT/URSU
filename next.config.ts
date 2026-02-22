@@ -20,8 +20,20 @@
 import path from "path";
 import type { NextConfig } from "next";
 
+// Optional: run with ANALYZE=true npm run analyze to open bundle size reports
+let withBundleAnalyzer = (c: NextConfig) => c;
+try {
+  const bundleAnalyzer = require("@next/bundle-analyzer");
+  withBundleAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "true" });
+} catch {
+  // @next/bundle-analyzer not installed
+}
+
 const nextConfig: NextConfig = {
   turbopack: {},
+
+  // Smaller serverless payload on Vercel (copies only needed deps)
+  output: "standalone",
 
   // Keep these out of the serverless bundle to stay under Vercel's 250 MB limit
   serverExternalPackages: [
@@ -65,4 +77,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "dev:webpack": "next dev --no-turbopack",
     "build": "next build",
+    "analyze": "next build",
     "start": "next start",
     "lint": "eslint",
     "db:generate": "prisma generate",
@@ -31,6 +32,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.1.6",
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",

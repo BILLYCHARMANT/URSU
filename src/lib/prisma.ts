@@ -51,6 +51,6 @@ function createPrisma(): PrismaClientType {
 let prismaInstance = globalForPrisma.prisma;
 if (!prismaInstance || typeof (prismaInstance as { call?: unknown }).call === "undefined") {
   prismaInstance = createPrisma();
-  if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prismaInstance;
+  globalForPrisma.prisma = prismaInstance;
 }
 export const prisma = prismaInstance;
