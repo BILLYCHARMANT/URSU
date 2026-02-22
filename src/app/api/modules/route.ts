@@ -79,7 +79,7 @@ export async function POST(req: Request) {
     });
     
     if (course?.program) {
-      const cohortIds = course.program.cohorts.map((c) => c.id);
+      const cohortIds = course.program.cohorts.map((c: (typeof course.program.cohorts)[number]) => c.id);
       const enrollments = await prisma.enrollment.findMany({
         where: { cohortId: { in: cohortIds } },
         include: { trainee: { select: { id: true, active: true } } },

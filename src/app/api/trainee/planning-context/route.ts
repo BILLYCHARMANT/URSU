@@ -40,7 +40,7 @@ export async function GET() {
     const programIds = [
       ...new Set(
         enrollments
-          .map((e) => e.cohort?.programId)
+          .map((e: (typeof enrollments)[number]) => e.cohort?.programId)
           .filter((id): id is string => Boolean(id))
       ),
     ];

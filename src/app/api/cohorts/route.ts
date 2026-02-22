@@ -60,7 +60,7 @@ export async function GET(req: Request) {
         },
       },
     });
-    const cohorts = enrollments.map((e) => e.cohort);
+    const cohorts = enrollments.map((e: (typeof enrollments)[number]) => e.cohort);
     return NextResponse.json(cohorts);
   } catch (e) {
     console.error(e);

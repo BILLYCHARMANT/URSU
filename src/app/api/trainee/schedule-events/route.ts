@@ -72,7 +72,7 @@ export async function POST(req: Request) {
     const firstCohort = enrollments[0]?.cohort;
     const cohortMentorId = firstCohort?.mentorId;
     const traineeProgramIds = enrollments
-      .map((e) => e.cohort?.programId)
+      .map((e: (typeof enrollments)[number]) => e.cohort?.programId)
       .filter((id): id is string => Boolean(id));
 
     if (eventType === "MENTOR_MEETING") {
