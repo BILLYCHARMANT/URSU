@@ -65,8 +65,8 @@ export async function revalidateProgress(
     },
   });
 
-  if (moduleComplete && module.course?.program) {
-    const program = module.course.program;
+  if (moduleComplete && mod.course?.program) {
+    const program = mod.course.program;
     const programModuleIds = (await prisma.module.findMany({ where: { course: { programId: program.id } }, select: { id: true } })).map((m) => m.id);
     const completed = await prisma.progress.count({
       where: {

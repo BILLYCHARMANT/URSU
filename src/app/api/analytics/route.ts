@@ -65,13 +65,17 @@ export async function GET(req: Request) {
         ? Math.round((completedPrograms / totalTrainees) * 100)
         : 0;
 
+    type ProgressItem = (typeof progress)[number];
     const byModule = progress.reduce(
-      (acc, p) => {
+      (
+        acc: Record<string, ProgressItem[]>,
+        p: ProgressItem
+      ) => {
         if (!acc[p.moduleId]) acc[p.moduleId] = [];
         acc[p.moduleId].push(p);
         return acc;
       },
-      {} as Record<string, typeof progress>
+      {} as Record<string, ProgressItem[]>
     );
     const moduleStats = Object.entries(byModule).map(([moduleId, list]) => {
       const completed = list.filter((p) => p.status === "COMPLETED").length;

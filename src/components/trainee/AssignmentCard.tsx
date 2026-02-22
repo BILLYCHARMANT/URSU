@@ -166,7 +166,7 @@ export function AssignmentCard({ assignment, traineeId }: { assignment: Assignme
               </p>
               {submission.feedback && submission.feedback.length > 0 && (
                 <div className="mt-2 space-y-2">
-                  {submission.feedback.map((f: { grade?: string; comment?: string; adminComment?: string }, idx: number) => (
+                  {submission.feedback.map((f: SubmissionFeedback, idx: number) => (
                     <div key={idx} className="bg-white dark:bg-[#1f2937] rounded p-3 border border-orange-200 dark:border-orange-800">
                       {f.grade && (
                         <p className="text-sm font-semibold text-slate-800 dark:text-[#f9fafb] mb-1">
