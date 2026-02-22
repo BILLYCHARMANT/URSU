@@ -36,8 +36,9 @@ export async function POST(
     if (!cohort) {
       return NextResponse.json({ error: "Cohort not found" }, { status: 404 });
     }
+    type CourseWithModules = NonNullable<typeof cohort.program>["courses"][number];
     const programModules =
-      cohort.program?.courses.flatMap((c) => c.modules) ?? [];
+      cohort.program?.courses.flatMap((c: CourseWithModules) => c.modules) ?? [];
     const created: string[] = [];
     for (const traineeId of parsed.data.traineeIds) {
       const trainee = await prisma.user.findUnique({
