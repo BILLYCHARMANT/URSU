@@ -53,7 +53,11 @@ export async function GET(req: Request) {
         }),
       ]);
 
-    const traineeIds = [...new Set(enrollments.map((e) => e.traineeId))];
+    const traineeIds = [
+      ...new Set(
+        enrollments.map((e: (typeof enrollments)[number]) => e.traineeId)
+      ),
+    ];
     const totalTrainees = traineeIds.length;
     const completedPrograms = certificates.length;
     const completionRate =
