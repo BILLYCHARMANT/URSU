@@ -66,7 +66,7 @@ export async function GET(req: Request) {
         : 0;
 
     type ProgressItem = (typeof progress)[number];
-    const byModule = progress.reduce(
+    const byModule: Record<string, ProgressItem[]> = progress.reduce(
       (
         acc: Record<string, ProgressItem[]>,
         p: ProgressItem
@@ -75,9 +75,9 @@ export async function GET(req: Request) {
         acc[p.moduleId].push(p);
         return acc;
       },
-      {} as Record<string, ProgressItem[]>
+      {} as Record<string, ProgressItem[]>,
     );
-    const moduleStats = Object.entries(byModule).map(([moduleId, list]: [string, ProgressItem[]]) => {
+    const moduleStats = (Object.entries(byModule) as [string, ProgressItem[]][]).map(([moduleId, list]) => {
       const completed = list.filter((p) => p.status === "COMPLETED").length;
       const avg =
         list.length > 0
