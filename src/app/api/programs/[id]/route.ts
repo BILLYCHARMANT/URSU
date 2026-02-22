@@ -4,8 +4,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { Prisma } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { prisma, PrismaJsonNull } from "@/lib/prisma";
 import { logAudit, AUDIT_ACTIONS } from "@/lib/audit-service";
 import { z } from "zod";
 
@@ -84,7 +83,7 @@ export async function PATCH(
     if (parsed.data.imageUrl !== undefined) updateData.imageUrl = parsed.data.imageUrl === "" ? null : parsed.data.imageUrl;
     if (parsed.data.duration !== undefined) updateData.duration = parsed.data.duration;
     if (parsed.data.skillOutcomes !== undefined) updateData.skillOutcomes = parsed.data.skillOutcomes;
-    if (parsed.data.faq !== undefined) updateData.faq = parsed.data.faq === null ? Prisma.JsonNull : parsed.data.faq;
+    if (parsed.data.faq !== undefined) updateData.faq = parsed.data.faq === null ? PrismaJsonNull : parsed.data.faq;
 
     const program = await prisma.program.update({
       where: { id },

@@ -347,8 +347,9 @@ export default async function TraineePlanningPage() {
     }
   }
 
-  const progressByModule = new Map(
-    progressRecords.map((p) => [p.moduleId, { status: p.status, percentComplete: p.percentComplete }])
+  type ProgressEntry = { status: string; percentComplete: number };
+  const progressByModule = new Map<string, ProgressEntry>(
+    progressRecords.map((p): [string, ProgressEntry] => [p.moduleId, { status: p.status, percentComplete: p.percentComplete }])
   );
   const firstIncompleteModule = orderedModules.find(
     (m) => !progressByModule.get(m.id) || progressByModule.get(m.id)!.status !== "COMPLETED"

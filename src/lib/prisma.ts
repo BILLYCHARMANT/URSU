@@ -1,8 +1,13 @@
 // Prisma client singleton for Next.js (Prisma 7 requires a driver adapter)
-import { PrismaClient } from "@prisma/client";
+import * as PrismaPkg from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+const { PrismaClient } = PrismaPkg;
+
+// Re-export JsonNull for setting JSON fields to DB null (avoids importing Prisma namespace in routes; TS may not resolve it with bundler)
+export const PrismaJsonNull = (PrismaPkg as unknown as { Prisma?: { JsonNull: unknown } }).Prisma?.JsonNull;
+
+const globalForPrisma = globalThis as unknown as { prisma: InstanceType<typeof PrismaClient> };
 
 function getConnectionString(): string {
   let connectionString = process.env.DATABASE_URL;
