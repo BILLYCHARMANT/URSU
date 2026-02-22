@@ -109,7 +109,7 @@ export function DashboardShell({
   const mentorLinks: NavEntry[] = [
     { href: base, label: "Home", icon: "home" },
     { group: "Programs", icon: "folder", items: [
-      { href: `${base}/admin/programs-management`, label: "Programs" },
+      { href: `${base}/mentor/programs`, label: "Programs" },
     ]},
     { href: `${base}/mentor/programs`, label: "Course List", icon: "folder" },
     { href: `${base}/mentor/submissions/grade`, label: "Grading", icon: "quiz" },

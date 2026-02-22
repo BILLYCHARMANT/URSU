@@ -21,16 +21,34 @@ export async function GET() {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const where: { id?: { in: string[] } } = {};
+    const cohortWhere: { mentorId?: string } = {};
+    if (session.user.role === "MENTOR") {
+      const mentorCohorts = await prisma.cohort.findMany({
+        where: { mentorId: session.user.id },
+        select: { programId: true },
+      });
+      const programIds = [...new Set(mentorCohorts.map((c) => c.programId).filter(Boolean))] as string[];
+      if (programIds.length === 0) {
+        return NextResponse.json([]);
+      }
+      where.id = { in: programIds };
+      cohortWhere.mentorId = session.user.id;
+    }
     const programs = await prisma.program.findMany({
+      where,
       orderBy: { createdAt: "desc" },
       include: {
-        cohorts: { select: { id: true, name: true, startDate: true } },
-        courses: { 
-          select: { 
-            id: true, 
+        cohorts: {
+          where: Object.keys(cohortWhere).length ? cohortWhere : undefined,
+          select: { id: true, name: true, startDate: true },
+        },
+        courses: {
+          select: {
+            id: true,
             name: true,
-            modules: { select: { id: true, title: true, order: true } }
-          } 
+            modules: { select: { id: true, title: true, order: true } },
+          },
         },
       },
     });
