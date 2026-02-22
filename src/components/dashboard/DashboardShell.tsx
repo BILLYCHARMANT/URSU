@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import type { Role } from "@/types";
+import { URSULogo } from "@/components/URSULogo";
 
 const roleLabels: Record<Role, string> = {
   ADMIN: "Admin",
@@ -102,6 +103,7 @@ export function DashboardShell({
     { href: `${base}/admin/programs`, label: "Course List", icon: "folder" },
     { href: `${base}/admin/cohorts`, label: "Cohorts", icon: "users" },
     { href: `${base}/admin/schedule-requests`, label: "Schedule requests", icon: "calendar" },
+    { href: `${base}/admin/calls`, label: "Application forms", icon: "doc" },
     { href: `${base}/admin/users`, label: "Users", icon: "user" },
     { href: `${base}/admin/analytics`, label: "Analytics", icon: "chart" },
     { href: `${base}/admin/submissions/grade`, label: "Confirm grades", icon: "quiz" },
@@ -172,8 +174,11 @@ export function DashboardShell({
             </svg>
           </button>
           <Link href={base} className="flex items-center gap-2 shrink-0">
+            <span className="hidden sm:block">
+              <URSULogo className="h-8 w-auto object-contain" alt="" />
+            </span>
             <span className="text-xl font-bold text-[var(--unipod-blue)]">URSU</span>
-            <span className="text-xl font-bold text-[#171717] dark:text-[#f9fafb]">PROJECTS</span>
+            <span className="text-xl font-bold text-[var(--foreground)]">PROJECTS</span>
           </Link>
           <div className="hidden sm:block max-w-xs w-full ml-2">
             <label className="sr-only" htmlFor="navbar-search">Search</label>

@@ -22,7 +22,14 @@ export async function POST(req: Request) {
       );
     }
     const type = formData.get("type") as string | null;
-    const subdir = type === "avatar" ? "avatars" : (type === "course" || type === "program") ? "courses" : "submissions";
+    const subdir =
+      type === "avatar"
+        ? "avatars"
+        : type === "course" || type === "program"
+          ? "courses"
+          : type === "call"
+            ? "calls"
+            : "submissions";
     const ext = (path.extname(file.name) || "").toLowerCase();
     if (subdir === "submissions") {
       const allowed = [".pdf", ".doc", ".docx"];
@@ -33,7 +40,16 @@ export async function POST(req: Request) {
         );
       }
     }
-    const safeExt = ext || (subdir === "avatars" ? ".png" : ".bin");
+    if (subdir === "calls") {
+      const allowed = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".pdf"];
+      if (!allowed.includes(ext)) {
+        return NextResponse.json(
+          { error: "Call flyer: use image (.png, .jpg, .gif, .webp) or PDF" },
+          { status: 400 }
+        );
+      }
+    }
+    const safeExt = ext || (subdir === "avatars" ? ".png" : subdir === "calls" ? ".png" : ".bin");
     const safeName = `${uuidv4()}${safeExt}`;
     const uploadDir = process.env.UPLOAD_DIR || "./uploads";
     const dir = path.join(process.cwd(), uploadDir, subdir);
@@ -48,7 +64,9 @@ export async function POST(req: Request) {
         ? `/api/upload/serve/avatar/${safeName}`
         : subdir === "courses"
           ? `/api/upload/serve/course/${safeName}`
-          : `/api/upload/serve/${safeName}`;
+          : subdir === "calls"
+            ? `/api/upload/serve/call-flyer/${safeName}`
+            : `/api/upload/serve/${safeName}`;
     return NextResponse.json({ fileUrl, filename: file.name });
   } catch (e) {
     console.error(e);

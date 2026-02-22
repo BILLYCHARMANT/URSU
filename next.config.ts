@@ -23,7 +23,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   turbopack: {},
 
-  // ✅ ADD THIS BLOCK
+  // Don't bundle next-auth; use Node require (fixes "Can't resolve 'next-auth'")
+  serverExternalPackages: ["next-auth"],
+
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -35,13 +37,19 @@ const nextConfig: NextConfig = {
 
   webpack: (config) => {
     config.resolve = config.resolve ?? {};
-    const projectNodeModules = path.join(process.cwd(), "node_modules");
+    const projectRoot = process.cwd();
+    const projectNodeModules = path.join(projectRoot, "node_modules");
     config.resolve.modules = [
       projectNodeModules,
       ...(Array.isArray(config.resolve.modules)
         ? config.resolve.modules
         : ["node_modules"]),
     ];
+    // Force next-auth to resolve from project node_modules (fixes "Can't resolve 'next/auth'")
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "next-auth": path.join(projectNodeModules, "next-auth"),
+    };
     return config;
   },
 };

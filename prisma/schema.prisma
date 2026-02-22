@@ -42,6 +42,7 @@ model User {
   certificatesApproved Certificate[] @relation("CertificateApprover")
   traineeScheduledEvents TraineeScheduledEvent[]
   mentorScheduledEvents TraineeScheduledEvent[] @relation("ScheduledEventsAsMentor")
+  callsCreated     Call[]
 }
 
 // ============== PROGRAM & COHORT ==============
@@ -341,4 +342,47 @@ model AuditLog {
   @@index([actorId])
   @@index([entityType])
   @@index([createdAt])
+}
+
+// ============== CALLS / APPLICATION FORMS (admin-created; shown on home) ==============
+enum CallType {
+  PROJECT
+  APPLICATION
+  COMPETITION
+  EVENT
+}
+
+model Call {
+  id          String    @id @default(cuid())
+  title       String
+  type        CallType  @default(APPLICATION)
+  summary     String    // short text for home page card
+  description String?   // optional longer description on apply page
+  imageUrl    String?   // photo or flyer for the call (uploaded or external URL)
+  deadline    DateTime? // optional; null = no deadline
+  published   Boolean   @default(false)
+  formSchema  Json      // [{ id, type, label, required, placeholder?, options? }]
+  createdById String?
+  createdBy   User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  submissions CallSubmission[]
+
+  @@index([published])
+  @@index([deadline])
+}
+
+model CallSubmission {
+  id         String   @id @default(cuid())
+  callId     String
+  call       Call     @relation(fields: [callId], references: [id], onDelete: Cascade)
+  data       Json     // form answers: { fieldId: value, ... }
+  submittedById String?  // if user was logged in
+  submitterName  String?  // for anonymous or display
+  submitterEmail String?  // for anonymous or display
+  submittedAt DateTime @default(now())
+
+  @@index([callId])
+  @@index([submittedAt])
 }

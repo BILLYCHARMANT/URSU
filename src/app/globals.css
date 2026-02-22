@@ -3,23 +3,33 @@
 /* Class-based dark mode (toggle via .dark on html) */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* UniPod brand colors */
+/* URSU — University of Rwanda Students' Union — brand colors from official logo
+   Logo: shield (navy/royal blue), gold sun & borders, light blue canopy, dark blue text */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-  --unipod-blue: #0066cc;
-  --unipod-blue-hover: #0052a3;
-  --unipod-blue-light: #e6f0fa;
-  --unipod-yellow: #facc15;
-  --unipod-yellow-bg: #fef9c3;
-  --unipod-green: #00c853;
-  --sidebar-bg: #f8f8f8;
+  --foreground: #1a237e;
+  /* Primary: royal blue (shield, borders in logo) */
+  --unipod-blue: #4169e1;
+  --unipod-blue-hover: #304ffe;
+  --unipod-blue-light: #e8eaf6;
+  /* Accent: gold (sun, "Strive for a Golden Future") */
+  --unipod-yellow: #ffd700;
+  --unipod-yellow-bg: #fff8e1;
+  --unipod-green: #2e7d32;
+  /* Sidebar: light indigo tint (university / academic) */
+  --sidebar-bg: #e8eaf6;
+  /* Navy for headings (logo text color) */
+  --ursu-navy: #1a237e;
+  --ursu-sky: #bbdefb;
 }
 
 .dark {
-  --background: #111827;
-  --foreground: #f9fafb;
-  --sidebar-bg: #1f2937;
+  --background: #0d1b2a;
+  --foreground: #e8eaf6;
+  --sidebar-bg: #1a237e;
+  --unipod-blue: #5c6bc0;
+  --unipod-blue-light: #283593;
+  --unipod-yellow-bg: #ffecb3;
 }
 
 @theme inline {
@@ -38,13 +48,14 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* UniPod primary button and link */
+/* URSU primary button and link (royal blue / gold accent) */
 .btn-unipod {
   background-color: var(--unipod-blue);
   color: white;
 }
 .btn-unipod:hover:not(:disabled) {
-  opacity: 0.9;
+  background-color: var(--unipod-blue-hover);
+  opacity: 0.95;
 }
 .link-unipod {
   color: var(--unipod-blue);

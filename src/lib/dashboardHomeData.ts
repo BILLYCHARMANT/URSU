@@ -81,10 +81,10 @@ export async function getAdminHomeData(userId: string, userName: string | null) 
     prisma.submission.count({ where: { status: SubmissionStatus.RESUBMIT_REQUESTED } }),
   ]);
   const donutData = [
-    { name: "Pending", value: pending, color: "#0066cc" },
-    { name: "Approved", value: approved, color: "#00c853" },
+    { name: "Pending", value: pending, color: "#4169e1" },
+    { name: "Approved", value: approved, color: "#2e7d32" },
     { name: "Rejected", value: rejected, color: "#dc2626" },
-    { name: "Resubmit", value: resubmit, color: "#facc15" },
+    { name: "Resubmit", value: resubmit, color: "#ffd700" },
   ].filter((d) => d.value > 0);
   if (donutData.length === 0) donutData.push(...DEFAULT_DONUT);
 
@@ -204,10 +204,10 @@ export async function getMentorHomeData(userId: string, userName: string | null)
       ])
     : [0, 0, 0, 0];
   const donutData = [
-    { name: "Pending", value: pending, color: "#0066cc" },
-    { name: "Approved", value: approved, color: "#00c853" },
+    { name: "Pending", value: pending, color: "#4169e1" },
+    { name: "Approved", value: approved, color: "#2e7d32" },
     { name: "Rejected", value: rejected, color: "#dc2626" },
-    { name: "Resubmit", value: resubmit, color: "#facc15" },
+    { name: "Resubmit", value: resubmit, color: "#ffd700" },
   ].filter((d) => d.value > 0);
   if (donutData.length === 0) donutData.push(...DEFAULT_DONUT);
 
@@ -358,10 +358,10 @@ export async function getTraineeHomeData(userId: string, userName: string | null
     prisma.submission.count({ where: { traineeId: userId, status: SubmissionStatus.RESUBMIT_REQUESTED } }),
   ]);
   const donutData = [
-    { name: "Pending", value: pending, color: "#0066cc" },
-    { name: "Approved", value: approved, color: "#00c853" },
+    { name: "Pending", value: pending, color: "#4169e1" },
+    { name: "Approved", value: approved, color: "#2e7d32" },
     { name: "Rejected", value: rejected, color: "#dc2626" },
-    { name: "Resubmit", value: resubmit, color: "#facc15" },
+    { name: "Resubmit", value: resubmit, color: "#ffd700" },
   ].filter((d) => d.value > 0);
   if (donutData.length === 0) donutData.push(...DEFAULT_DONUT);
 

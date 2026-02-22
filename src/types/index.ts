@@ -46,3 +46,11 @@ export const ScheduleRequestStatus = {
   APPROVED: "APPROVED",
   REJECTED: "REJECTED",
 } as const;
+
+export type CallType = "PROJECT" | "APPLICATION" | "COMPETITION" | "EVENT";
+export const CallType = {
+  PROJECT: "PROJECT",
+  APPLICATION: "APPLICATION",
+  COMPETITION: "COMPETITION",
+  EVENT: "EVENT",
+} as const;

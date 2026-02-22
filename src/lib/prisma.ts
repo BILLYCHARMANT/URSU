@@ -1,14 +1,15 @@
 // Prisma client singleton for Next.js (Prisma 7 requires a driver adapter)
-// Type from generated client (avoids @prisma/client export resolution with bundler)
+// Load PrismaClient via createRequire so the generated client (with Call model) is always used
 import type { PrismaClient as PrismaClientType } from ".prisma/client";
-import * as PrismaPkg from "@prisma/client";
+import { createRequire } from "node:module";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-// Get PrismaClient constructor from package (value; type comes from type-only import above)
-const PrismaClient = (PrismaPkg as unknown as { PrismaClient: new (args?: object) => PrismaClientType }).PrismaClient;
+const requireModule = createRequire(import.meta.url);
+const GeneratedClient = requireModule(".prisma/client").PrismaClient;
 
-// Re-export JsonNull for setting JSON fields to DB null (avoids importing Prisma namespace in routes; TS may not resolve it with bundler)
-export const PrismaJsonNull = (PrismaPkg as unknown as { Prisma?: { JsonNull: unknown } }).Prisma?.JsonNull;
+// Re-export JsonNull from generated client
+const PrismaNamespace = requireModule(".prisma/client").Prisma;
+export const PrismaJsonNull = PrismaNamespace?.JsonNull;
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClientType };
 
@@ -17,7 +18,6 @@ function getConnectionString(): string {
   if (!connectionString) {
     throw new Error("DATABASE_URL is not set. Add it to .env.local (see .env.example).");
   }
-  // In development, limit pool size to avoid "too many clients" (PostgreSQL default max_connections is often 100)
   if (process.env.NODE_ENV === "development") {
     try {
       const url = new URL(connectionString);
@@ -26,7 +26,7 @@ function getConnectionString(): string {
         connectionString = url.toString();
       }
     } catch {
-      // If URL parsing fails, use as-is
+      // no-op
     }
   }
   return connectionString;
@@ -39,7 +39,7 @@ function createPrisma(): PrismaClientType {
     adapterOptions.max = 5;
   }
   const adapter = new PrismaPg(adapterOptions);
-  return new PrismaClient({
+  return new GeneratedClient({
     adapter,
     log:
       process.env.NODE_ENV === "development"
@@ -48,5 +48,9 @@ function createPrisma(): PrismaClientType {
   }) as PrismaClientType;
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrisma();
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+let prismaInstance = globalForPrisma.prisma;
+if (!prismaInstance || typeof (prismaInstance as { call?: unknown }).call === "undefined") {
+  prismaInstance = createPrisma();
+  if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prismaInstance;
+}
+export const prisma = prismaInstance;

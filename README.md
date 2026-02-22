@@ -1,6 +1,11 @@
 # URSU PROJECTS Dashboard
 
-Web-based Prototyping Development Program (PROGRAMS) dashboard for UNIPOD: learning content, trainee assessment, progress tracking, and certificate generation.
+**University of Rwanda Students' Union** — project-based competition, progress tracking, and certification. The UI uses URSU brand colors from the official logo (royal blue, navy, gold, light blue).
+
+## Branding
+
+- **Logo:** Place the official URSU logo as `public/ursu-logo.png` so it appears on the home page, login, and dashboard header. If the file is missing, the wordmark "URSU PROJECTS" is still shown.
+- **Colors:** Defined in `src/app/globals.css` (royal blue primary, gold accent, navy text, light indigo sidebar).
 
 ## Tech stack
 

@@ -3,6 +3,7 @@ import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { URSULogo } from "@/components/URSULogo";
 
 function LoginForm() {
   const router = useRouter();
@@ -37,13 +38,19 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-sm rounded-xl border border-[#e5e7eb] bg-white p-8 shadow-sm">
-      <div className="flex justify-center mb-6">
-        <span className="text-2xl font-bold" style={{ color: "var(--unipod-blue)" }}>URSU</span>
-        <span className="text-2xl font-bold text-[#171717]">PROJECTS</span>
+    <div className="w-full max-w-sm rounded-xl border border-[var(--unipod-blue-light)] bg-white p-8 shadow-sm">
+      <div className="flex justify-center mb-4">
+        <URSULogo className="h-14 w-auto object-contain" alt="URSU" />
       </div>
-      <h1 className="text-xl font-semibold text-[#171717] text-center mb-6">
-        Sign in to URSU PROJECTS Dashboard
+      <div className="flex justify-center mb-2">
+        <span className="text-2xl font-bold" style={{ color: "var(--unipod-blue)" }}>URSU</span>
+        <span className="text-2xl font-bold" style={{ color: "var(--ursu-navy, #1a237e)" }}> PROJECTS</span>
+      </div>
+      <p className="text-xs uppercase tracking-wide text-center mb-6" style={{ color: "var(--ursu-navy, #1a237e)", opacity: 0.85 }}>
+        University of Rwanda Students&apos; Union
+      </p>
+      <h1 className="text-xl font-semibold text-center mb-6" style={{ color: "var(--foreground)" }}>
+        Sign in to dashboard
       </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -95,13 +102,19 @@ function LoginForm() {
 
 function LoginFallback() {
   return (
-    <div className="w-full max-w-sm rounded-xl border border-[#e5e7eb] bg-white p-8 shadow-sm">
-      <div className="flex justify-center mb-6">
-        <span className="text-2xl font-bold" style={{ color: "var(--unipod-blue)" }}>URSU</span>
-        <span className="text-2xl font-bold text-[#171717]">PROJECTS</span>
+    <div className="w-full max-w-sm rounded-xl border border-[var(--unipod-blue-light)] bg-white p-8 shadow-sm">
+      <div className="flex justify-center mb-4">
+        <URSULogo className="h-14 w-auto object-contain" alt="URSU" />
       </div>
-      <h1 className="text-xl font-semibold text-[#171717] text-center mb-6">
-        Sign in to URSU PROJECTS Dashboard
+      <div className="flex justify-center mb-2">
+        <span className="text-2xl font-bold" style={{ color: "var(--unipod-blue)" }}>URSU</span>
+        <span className="text-2xl font-bold" style={{ color: "var(--ursu-navy, #1a237e)" }}> PROJECTS</span>
+      </div>
+      <p className="text-xs uppercase tracking-wide text-center mb-6" style={{ color: "var(--ursu-navy, #1a237e)", opacity: 0.85 }}>
+        University of Rwanda Students&apos; Union
+      </p>
+      <h1 className="text-xl font-semibold text-center mb-6" style={{ color: "var(--foreground)" }}>
+        Sign in to dashboard
       </h1>
       <div className="flex justify-center py-8 text-[#6b7280]">Loading…</div>
     </div>
