@@ -5,6 +5,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CallsListClient } from "@/components/admin/CallsListClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminCallsPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user || session.user.role !== "ADMIN") {

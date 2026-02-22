@@ -5,6 +5,8 @@ import { CallFormEditor, type FormFieldDef } from "@/components/admin/CallFormEd
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "@/lib/get-server-session";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditCallPage({
   params,
 }: {

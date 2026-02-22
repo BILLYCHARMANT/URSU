@@ -13,6 +13,8 @@ const typeLabels: Record<string, string> = {
   EVENT: "Event",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ApplyPage({
   params,
 }: {

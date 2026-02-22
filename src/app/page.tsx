@@ -11,6 +11,8 @@ const callTypeLabels: Record<string, string> = {
   EVENT: "Event",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const [news, calls] = await Promise.all([getPublicNews(10), getPublicCalls(10)]);

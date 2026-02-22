@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CallFormEditor } from "@/components/admin/CallFormEditor";
 
+export const dynamic = "force-dynamic";
+
 export default async function NewCallPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user || session.user.role !== "ADMIN") {
