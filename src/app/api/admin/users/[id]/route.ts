@@ -77,12 +77,14 @@ export async function GET(
         submissionStatusCounts: statusCounts,
         onTimeDeliveryRate: onTimeRate,
       },
-      recentEnrollments: enrollmentsWithProgram.map((e) => ({
-        id: e.id,
-        programName: e.cohort.program?.name ?? "—",
-        cohortName: e.cohort.name,
-        enrolledAt: e.enrolledAt,
-      })),
+      recentEnrollments: enrollmentsWithProgram.map(
+        (e: (typeof enrollmentsWithProgram)[number]) => ({
+          id: e.id,
+          programName: e.cohort.program?.name ?? "—",
+          cohortName: e.cohort.name,
+          enrolledAt: e.enrolledAt,
+        })
+      ),
     });
   } catch (e) {
     console.error(e);
