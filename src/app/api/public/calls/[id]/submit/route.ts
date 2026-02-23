@@ -1,15 +1,23 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import type { Session } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
 
+// Allow form data values: string, number, boolean, or array of primitives (e.g. multi-select)
+const formValueSchema = z.union([
+  z.string(),
+  z.number(),
+  z.boolean(),
+  z.array(z.union([z.string(), z.number(), z.boolean()])),
+]);
 const submitSchema = z.object({
-  data: z.record(z.string(), z.union([z.string(), z.number()])),
+  data: z.record(z.string(), formValueSchema),
   submitterName: z.string().optional(),
-  submitterEmail: z.string().email().optional(),
+  submitterEmail: z.string().email().optional().or(z.literal("")),
 });
 
 /** Submit an application form. No auth required; optional name/email for anonymous. */
@@ -24,25 +32,45 @@ export async function POST(
     });
     if (!call) return NextResponse.json({ error: "Call not found" }, { status: 404 });
 
-    const body = await req.json();
-    const parsed = submitSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 });
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const session = await getServerSession(authOptions);
+    const parsed = submitSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
+
+    let session: Session | null = null;
+    try {
+      const s = await getServerSession(authOptions);
+      session = s as Session | null;
+    } catch {
+      // Auth not required for submit; continue with null session
+    }
+
+    const user = session?.user as Session["user"] | undefined;
+    // Ensure only JSON-serializable data for Prisma Json field
+    const dataForDb = JSON.parse(JSON.stringify(parsed.data.data)) as object;
+
     const submission = await prisma.callSubmission.create({
       data: {
         callId,
-        data: parsed.data.data as object,
-        submittedById: session?.user?.id ?? null,
-        submitterName: parsed.data.submitterName ?? session?.user?.name ?? null,
-        submitterEmail: parsed.data.submitterEmail ?? (session?.user?.email as string) ?? null,
+        data: dataForDb,
+        submittedById: user?.id ?? null,
+        submitterName: (parsed.data.submitterName?.trim() || user?.name) ?? null,
+        submitterEmail: (parsed.data.submitterEmail?.trim() || user?.email) ?? null,
       },
     });
     return NextResponse.json({ id: submission.id, message: "Application submitted successfully." });
   } catch (e) {
-    console.error(e);
+    console.error("Call submit error:", e);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

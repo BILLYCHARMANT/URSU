@@ -47,7 +47,8 @@ export async function POST(
     const fileUrl = `/api/upload/serve/call/${callId}/${safeName}`;
 
     const { useNetlifyBlob } = await import("@/lib/upload-store");
-    if (useNetlifyBlob()) {
+    const preferBlob = useNetlifyBlob() || process.env.NODE_ENV === "production";
+    if (preferBlob) {
       try {
         const { getStore } = await import("@netlify/blobs");
         const store = getStore("uploads");
@@ -55,21 +56,34 @@ export async function POST(
         return NextResponse.json({ fileUrl, filename: file.name });
       } catch (blobErr) {
         console.error("Netlify Blob upload failed:", blobErr);
-        return NextResponse.json(
-          { error: "Upload failed on Netlify. Enable Netlify Blobs (Data & Storage)." },
-          { status: 500 }
-        );
+        if (useNetlifyBlob()) {
+          return NextResponse.json(
+            { error: "Upload failed. Enable Netlify Blobs (Data & Storage)." },
+            { status: 500 }
+          );
+        }
       }
     }
 
-    const uploadDir = process.env.UPLOAD_DIR || "./uploads";
-    const dir = path.join(process.cwd(), uploadDir, "call-submissions", callId);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    try {
+      const uploadDir = process.env.UPLOAD_DIR || "./uploads";
+      const dir = path.join(process.cwd(), uploadDir, "call-submissions", callId);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const filePath = path.join(dir, safeName);
+      fs.writeFileSync(filePath, buffer);
+      return NextResponse.json({ fileUrl, filename: file.name });
+    } catch (fsErr: unknown) {
+      const code = (fsErr as NodeJS.ErrnoException)?.code;
+      if (code === "EROFS" || code === "EACCES" || process.env.NODE_ENV === "production") {
+        return NextResponse.json(
+          { error: "Upload not available. On Netlify: enable Blobs and set USE_NETLIFY_BLOB=true, or use a URL." },
+          { status: 500 }
+        );
+      }
+      throw fsErr;
     }
-    const filePath = path.join(dir, safeName);
-    fs.writeFileSync(filePath, buffer);
-    return NextResponse.json({ fileUrl, filename: file.name });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

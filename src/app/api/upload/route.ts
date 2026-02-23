@@ -65,9 +65,10 @@ export async function POST(req: Request) {
             ? `/api/upload/serve/call-flyer/${safeName}`
             : `/api/upload/serve/${safeName}`;
 
-    // Netlify: use Blob store (no persistent filesystem)
+    // Prefer Netlify Blob when enabled, or try it in production (Netlify may not set NETLIFY env)
     const { useNetlifyBlob } = await import("@/lib/upload-store");
-    if (useNetlifyBlob()) {
+    const preferBlob = useNetlifyBlob() || process.env.NODE_ENV === "production";
+    if (preferBlob) {
       try {
         const { getStore } = await import("@netlify/blobs");
         const store = getStore(BLOB_STORE_NAME);
@@ -76,25 +77,42 @@ export async function POST(req: Request) {
         return NextResponse.json({ fileUrl, filename: file.name });
       } catch (blobErr) {
         console.error("Netlify Blob upload failed:", blobErr);
+        if (useNetlifyBlob()) {
+          return NextResponse.json(
+            {
+              error:
+                "Upload failed. Enable Netlify Blobs in the dashboard (Data & Storage) or use a flyer URL instead.",
+            },
+            { status: 500 }
+          );
+        }
+        // Fall through to filesystem (e.g. local or non-Netlify)
+      }
+    }
+
+    // Local / fallback: write to disk
+    try {
+      const uploadDir = process.env.UPLOAD_DIR || "./uploads";
+      const dir = path.join(process.cwd(), uploadDir, subdir);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const filePath = path.join(dir, safeName);
+      fs.writeFileSync(filePath, buffer);
+      return NextResponse.json({ fileUrl, filename: file.name });
+    } catch (fsErr: unknown) {
+      const code = (fsErr as NodeJS.ErrnoException)?.code;
+      if (code === "EROFS" || code === "EACCES" || process.env.NODE_ENV === "production") {
         return NextResponse.json(
           {
             error:
-              "Upload failed on Netlify. Enable Netlify Blobs in the Netlify dashboard (Data & Storage) or use a flyer URL instead.",
+              "Upload not available on this host. In Netlify: enable Blobs (Data & Storage) and set USE_NETLIFY_BLOB=true, or paste a flyer URL instead.",
           },
           { status: 500 }
         );
       }
+      throw fsErr;
     }
-
-    // Local: write to disk
-    const uploadDir = process.env.UPLOAD_DIR || "./uploads";
-    const dir = path.join(process.cwd(), uploadDir, subdir);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    const filePath = path.join(dir, safeName);
-    fs.writeFileSync(filePath, buffer);
-    return NextResponse.json({ fileUrl, filename: file.name });
   } catch (e) {
     console.error(e);
     return NextResponse.json(

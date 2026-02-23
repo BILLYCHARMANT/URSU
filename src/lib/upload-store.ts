@@ -14,16 +14,16 @@ export async function getUploadBuffer(
   filename: string,
   subPath?: string
 ): Promise<Uint8Array | null> {
-  if (useNetlifyBlob()) {
+  const tryBlob = useNetlifyBlob() || process.env.NODE_ENV === "production";
+  if (tryBlob) {
     try {
       const { getStore } = await import("@netlify/blobs");
       const store = getStore(BLOB_STORE_NAME);
       const key = subPath ? `${subdir}/${subPath}/${filename}` : `${subdir}/${filename}`;
       const data = await store.get(key, { type: "arrayBuffer" });
-      if (data == null) return null;
-      return new Uint8Array(data);
+      if (data != null) return new Uint8Array(data);
     } catch {
-      return null;
+      // Fall through to filesystem
     }
   }
   const uploadDir = process.env.UPLOAD_DIR || "./uploads";

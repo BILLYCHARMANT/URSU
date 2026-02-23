@@ -113,21 +113,27 @@ export function ApplyFormClient({
   if (success) {
     return (
       <div
-        className="rounded-xl border p-8 text-center"
+        className="rounded-xl border-2 p-10 text-center max-w-lg mx-auto"
         style={{
-          borderColor: "var(--unipod-blue-light)",
+          borderColor: "var(--unipod-blue)",
           backgroundColor: "var(--unipod-blue-light)",
         }}
       >
-        <h2 className="text-xl font-semibold" style={{ color: "var(--ursu-navy)" }}>
-          Application submitted
+        <p className="text-4xl mb-4" aria-hidden="true">
+          🎉
+        </p>
+        <h2 className="text-2xl font-bold" style={{ color: "var(--ursu-navy)" }}>
+          Congratulations!
         </h2>
-        <p className="mt-2 text-sm" style={{ color: "var(--foreground)" }}>
-          Thank you. Your application has been received.
+        <p className="mt-2 text-base font-medium" style={{ color: "var(--ursu-navy)" }}>
+          Your application has been submitted successfully.
+        </p>
+        <p className="mt-3 text-sm" style={{ color: "var(--foreground)" }}>
+          Thank you for applying. We have received your application and will get back to you.
         </p>
         <a
           href="/"
-          className="mt-6 inline-flex rounded-lg px-4 py-2 text-sm font-medium text-white"
+          className="mt-8 inline-flex rounded-lg px-5 py-2.5 text-sm font-medium text-white shadow-sm"
           style={{ backgroundColor: "var(--unipod-blue)" }}
         >
           Back to home
