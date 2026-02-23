@@ -42,7 +42,7 @@ export async function POST(
     const parsed = submitSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
+        { error: "Email Validation failed", details: parsed.error.flatten().fieldErrors },
         { status: 400 }
       );
     }
