@@ -32,14 +32,15 @@ try {
 const nextConfig: NextConfig = {
   turbopack: {},
 
-  // Smaller serverless payload on Vercel (copies only needed deps)
-  output: "standalone",
+  // Standalone only on Vercel; Netlify plugin expects non-standalone and upload can fail if bundle is huge
+  ...(process.env.NETLIFY ? {} : { output: "standalone" as const }),
 
-  // Keep these out of the serverless bundle to stay under Vercel's 250 MB limit
+  // Keep these out of the serverless bundle to stay under size limits (Vercel 250 MB / Netlify upload limit)
   serverExternalPackages: [
     "next-auth",
     "@prisma/client",
     "@prisma/adapter-pg",
+    "@netlify/blobs",
     "prisma",
     "pg",
     "pg-native",
@@ -47,6 +48,9 @@ const nextConfig: NextConfig = {
     "recharts",
     "pdf-lib",
     "qrcode",
+    "xlsx",
+    "zod",
+    "uuid",
   ],
 
   typescript: {
