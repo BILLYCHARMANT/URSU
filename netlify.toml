@@ -1,0 +1,27 @@
+# Netlify config for Next.js
+# Reduces server handler size so deploy upload can succeed (avoids "request body too large")
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Tell Netlify to treat these as external (don't bundle into the server handler).
+# They are installed in node_modules and loaded at runtime instead.
+[functions]
+  external_node_modules = [
+    "@prisma/client",
+    "@prisma/adapter-pg",
+    "@netlify/blobs",
+    "prisma",
+    "pg",
+    "pg-native",
+    "next-auth",
+    "bcryptjs",
+    "recharts",
+    "pdf-lib",
+    "qrcode",
+    "xlsx",
+    "zod",
+    "uuid"
+  ]
+  node_bundler = "esbuild"
