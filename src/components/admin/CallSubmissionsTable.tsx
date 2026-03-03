@@ -109,32 +109,39 @@ export function CallSubmissionsTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm text-[#6b7280] dark:text-[#9ca3af]">
+      {/* Download bar - always visible above the table */}
+      <div
+        className="flex flex-row flex-nowrap items-center justify-between gap-4 rounded-xl border px-4 py-3"
+        style={{
+          borderColor: "var(--unipod-blue)",
+          backgroundColor: "var(--unipod-blue-light)",
+        }}
+      >
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-[#171717] dark:text-[#f9fafb]">
             {submissions.length} submission(s) · Columns match form fields
           </p>
-          <p className="text-xs text-[#9ca3af] dark:text-[#6b7280] mt-0.5">
-            Scroll horizontally → to see all form fields. First 3 columns stay fixed.
+          <p className="text-xs text-[#6b7280] dark:text-[#9ca3af] mt-0.5">
+            Scroll horizontally → to see all fields. First 3 columns stay fixed.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-shrink-0 items-center gap-2">
           <button
             type="button"
             onClick={exportExcel}
-            className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white border border-transparent"
+            className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white shadow-sm"
             style={{ backgroundColor: "var(--unipod-blue)" }}
           >
             <span aria-hidden>📥</span>
-            Download Excel
+            Download Excel (.xlsx)
           </button>
           <button
             type="button"
             onClick={exportCsv}
-            className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium border bg-white dark:bg-[#1f2937] text-[#374151] dark:text-[#e5e7eb] border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f3f4f6] dark:hover:bg-[#374151]"
+            className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold shadow-sm border-2 border-[var(--unipod-blue)] bg-white dark:bg-[#1f2937] text-[var(--unipod-blue)] hover:opacity-90"
           >
             <span aria-hidden>📄</span>
-            Download CSV
+            Download CSV (.csv)
           </button>
         </div>
       </div>
